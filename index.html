@@ -7,7 +7,8 @@
   <title>Hatyai Room Allocation - Make it FAIR!</title>
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Quicksand:wght@600;700&display=swap"
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Quicksand:wght@600;700&family=Zhi+Mang+Xing&display=swap"
     rel="stylesheet">
 
   <style>
@@ -27,45 +28,146 @@
       align-items: center;
       justify-content: center;
       padding: 2rem 1rem;
-
-      /* Default Desktop: 50/50 Left and Right Split */
-      background-image:
-        linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-        linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-        url('gay.jpg'),
-        url('sparta.jpg');
-      background-position:
-        left top,
-        right top,
-        left center,
-        right center;
-      background-size:
-        50% 100%,
-        50% 100%,
-        50% 100%,
-        50% 100%;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
+      position: relative;
     }
 
+    /* Background Images */
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      z-index: -2;
+    }
+
+    body::before {
+      left: 0;
+      right: 50%;
+      background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('gay.jpg') center/cover no-repeat;
+    }
+
+    body::after {
+      left: 50%;
+      right: 0;
+      background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('sparta.jpg') center/cover no-repeat;
+    }
+
+    /* =========================================
+       FLOATING MINI CHARACTERS
+       ========================================= */
+    .side-chars {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: 50%;
+      pointer-events: none;
+      /* Let clicks pass through */
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .left-chars {
+      left: 0;
+    }
+
+    .right-chars {
+      right: 0;
+    }
+
+    .floating-char {
+      position: absolute;
+      opacity: 0.65;
+      animation: floatAnim 6s infinite ease-in-out alternate;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+    }
+
+    /* Left Side Characters */
+    .left-chars .floating-char:nth-child(1) {
+      left: 15%;
+      top: 20%;
+      font-size: 65px;
+      animation-duration: 7s;
+    }
+
+    .left-chars .floating-char:nth-child(2) {
+      left: 30%;
+      top: 60%;
+      font-size: 50px;
+      animation-delay: -2s;
+    }
+
+    .left-chars .floating-char:nth-child(3) {
+      left: 10%;
+      top: 80%;
+      font-size: 55px;
+      animation-delay: -4s;
+    }
+
+    /* Right Side Characters */
+    .right-chars .floating-char:nth-child(1) {
+      right: 15%;
+      top: 25%;
+      font-size: 60px;
+      animation-duration: 8s;
+    }
+
+    .right-chars .floating-char:nth-child(2) {
+      right: 35%;
+      top: 55%;
+      font-size: 50px;
+      animation-delay: -3s;
+    }
+
+    .right-chars .floating-char:nth-child(3) {
+      right: 10%;
+      top: 75%;
+      font-size: 65px;
+      animation-delay: -1s;
+    }
+
+    @keyframes floatAnim {
+      0% {
+        transform: translateY(0) rotate(-10deg);
+      }
+
+      100% {
+        transform: translateY(-40px) rotate(15deg);
+      }
+    }
+
+    /* Main Container */
     .container {
       width: 100%;
       max-width: 760px;
+      position: relative;
+      z-index: 10;
+      /* Keep it above the floating chars */
     }
 
+    /* EPIC NEW HEADER */
     h1 {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
+      font-family: 'Zhi Mang Xing', cursive;
+      font-size: 48px;
+      font-weight: 400;
+      margin-bottom: 1rem;
       text-align: center;
-      color: #fff;
+      /* Epic Fire/Gold Text Effect */
+      background: linear-gradient(to bottom, #ffffff, #facc15, #ef4444);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0px 6px 4px rgba(0, 0, 0, 0.8));
+      letter-spacing: 3px;
     }
 
     .pool-label {
       font-size: 13px;
-      color: #aaa;
+      color: #ccc;
       margin-bottom: 10px;
       text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
     }
 
     .pool-chips {
@@ -82,9 +184,10 @@
       align-items: center;
       gap: 7px;
       padding: 5px 12px 5px 6px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: 99px;
-      background: #333;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
       font-size: 14px;
       font-weight: 500;
       color: #fff;
@@ -122,12 +225,12 @@
 
     /* ROOM A: LGBT THEME */
     .lgbt-theme {
-      background: #ffffff;
+      background: rgba(255, 255, 255, 0.95);
       color: #1a1a1a;
       font-family: 'Quicksand', sans-serif;
       border: 4px solid transparent;
       border-image: linear-gradient(to bottom right, #ff0018, #ffa52c, #ffff41, #008018, #0000f9, #86007d) 1;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
     .lgbt-theme .room-title {
@@ -172,11 +275,11 @@
 
     /* ROOM B: SPARTA THEME */
     .sparta-theme {
-      background: #170404;
+      background: rgba(23, 4, 4, 0.95);
       color: #E2C792;
       font-family: 'Cinzel', serif;
       border: 3px solid #C5A059;
-      box-shadow: inset 0 0 40px rgba(139, 0, 0, 0.3), 0 10px 20px rgba(0, 0, 0, 0.5);
+      box-shadow: inset 0 0 40px rgba(139, 0, 0, 0.3), 0 10px 30px rgba(0, 0, 0, 0.7);
     }
 
     .sparta-theme .room-title {
@@ -307,27 +410,30 @@
 
     .draw-btn {
       width: 100%;
-      padding: 14px;
-      font-size: 16px;
-      font-weight: 600;
+      padding: 16px;
+      font-size: 18px;
+      font-weight: 700;
       cursor: pointer;
       border-radius: 8px;
       border: none;
       background: #C5A059;
       color: #170404;
       margin-top: 1rem;
-      transition: background 0.2s;
+      transition: background 0.2s, transform 0.1s;
       text-transform: uppercase;
       letter-spacing: 2px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     }
 
     .draw-btn:hover {
       background: #E2C792;
+      transform: translateY(-2px);
     }
 
     .draw-btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
+      transform: translateY(0);
     }
 
     .reset-btn {
@@ -360,37 +466,61 @@
        MOBILE RESPONSIVE DESIGN (PHONES)
        ========================================= */
     @media (max-width: 650px) {
-
-      /* Stack the rooms vertically */
       .rooms-grid {
         grid-template-columns: 1fr;
       }
 
-      /* Change background split from Left/Right to Top/Bottom */
-      body {
-        background-image:
-          linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-          /* Dark overlay LGBT */
-          linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-          /* Dark overlay Sparta */
-          url('lgbt.jpg'),
-          url('sparta.jpg');
-        background-position:
-          top left,
-          bottom left,
-          top center,
-          bottom center;
-        background-size:
-          100% 50%,
-          100% 50%,
-          100% 50%,
-          100% 50%;
+      h1 {
+        font-size: 40px;
+      }
+
+      /* Shift Backgrounds to Top/Bottom */
+      body::before {
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 50%;
+      }
+
+      body::after {
+        left: 0;
+        right: 0;
+        top: 50%;
+        bottom: 0;
+      }
+
+      /* Shift Floating Chars to Top/Bottom */
+      .side-chars {
+        width: 100%;
+        height: 50%;
+      }
+
+      .left-chars {
+        top: 0;
+        bottom: auto;
+      }
+
+      .right-chars {
+        top: 50%;
+        bottom: 0;
       }
     }
   </style>
 </head>
 
 <body>
+
+  <div class="side-chars left-chars">
+    <div class="floating-char">🦄</div>
+    <div class="floating-char">💅</div>
+    <div class="floating-char">🌈</div>
+  </div>
+
+  <div class="side-chars right-chars">
+    <div class="floating-char">⚔️</div>
+    <div class="floating-char">🛡️</div>
+    <div class="floating-char">💪</div>
+  </div>
 
   <div class="container">
     <h1>顶上战争 - 顶不住</h1>
