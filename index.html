@@ -4,8 +4,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Room Allocation Draw</title>
+  <title>Thematic Room Allocation Draw</title>
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Quicksand:wght@600;700&display=swap"
+    rel="stylesheet">
+
   <style>
     *,
     *::before,
@@ -17,8 +21,9 @@
 
     body {
       font-family: system-ui, sans-serif;
-      background: #f5f5f3;
-      color: #1a1a1a;
+      background: #2a2a2c;
+      /* Darker background to make both themes pop */
+      color: #f0f0f0;
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -28,27 +33,31 @@
 
     .container {
       width: 100%;
-      max-width: 640px;
+      max-width: 760px;
     }
 
     h1 {
-      font-size: 20px;
-      font-weight: 500;
+      font-size: 24px;
+      font-weight: 600;
       margin-bottom: 1.5rem;
+      text-align: center;
+      color: #fff;
     }
 
     .pool-label {
       font-size: 13px;
-      color: #888;
+      color: #aaa;
       margin-bottom: 10px;
+      text-align: center;
     }
 
     .pool-chips {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      justify-content: center;
+      gap: 10px;
       min-height: 44px;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
     }
 
     .pool-chip {
@@ -56,12 +65,12 @@
       align-items: center;
       gap: 7px;
       padding: 5px 12px 5px 6px;
-      border: 0.5px solid rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 99px;
-      background: #fff;
+      background: #333;
       font-size: 14px;
       font-weight: 500;
-      color: #1a1a1a;
+      color: #fff;
       transition: opacity 0.25s ease, transform 0.25s ease;
     }
 
@@ -73,7 +82,7 @@
       align-items: center;
       justify-content: center;
       font-size: 10px;
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .pool-chip.leaving {
@@ -84,49 +93,161 @@
     .rooms-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 1rem;
+      gap: 20px;
+      margin-bottom: 1.5rem;
     }
 
     .room-card {
-      background: #fff;
-      border: 0.5px solid rgba(0, 0, 0, 0.15);
       border-radius: 12px;
-      padding: 1.25rem;
+      padding: 1.5rem;
+      position: relative;
     }
 
-    .room-title {
-      font-size: 16px;
-      font-weight: 500;
+    /* =========================================
+       ROOM A: LGBT THEME 
+       ========================================= */
+    .lgbt-theme {
+      background: #ffffff;
+      color: #1a1a1a;
+      font-family: 'Quicksand', sans-serif;
+      /* Rainbow Border */
+      border: 4px solid transparent;
+      border-image: linear-gradient(to bottom right, #ff0018, #ffa52c, #ffff41, #008018, #0000f9, #86007d) 1;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .lgbt-theme .room-title {
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(to right, #ff0018, #ffa52c, #ffff41, #008018, #0000f9, #86007d);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       margin-bottom: 4px;
     }
 
-    .room-meta {
+    .lgbt-theme .room-meta {
+      color: #666;
       font-size: 13px;
-      color: #888;
       margin-bottom: 14px;
+      font-weight: 600;
     }
 
-    .cap-bar {
-      height: 4px;
+    .lgbt-theme .cap-bar {
       background: rgba(0, 0, 0, 0.1);
-      border-radius: 2px;
+    }
+
+    /* Rainbow Progress Bar */
+    .lgbt-theme .cap-fill {
+      background: linear-gradient(to right, #ff0018, #ffa52c, #ffff41, #008018, #0000f9, #86007d) !important;
+    }
+
+    .lgbt-theme .person-chip,
+    .lgbt-theme .slot-row {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .lgbt-theme .name-tag {
+      font-weight: 700;
+      color: #333;
+    }
+
+    .badge-a {
+      background: linear-gradient(to right, #ff0018, #ffa52c, #008018, #0000f9);
+      color: white;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    }
+
+
+    /* =========================================
+       ROOM B: SPARTA THEME 
+       ========================================= */
+    .sparta-theme {
+      background: #170404;
+      /* Very dark blood red/black */
+      color: #E2C792;
+      font-family: 'Cinzel', serif;
+      border: 3px solid #C5A059;
+      /* Gold border */
+      box-shadow: inset 0 0 40px rgba(139, 0, 0, 0.3), 0 10px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .sparta-theme .room-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #C5A059;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 4px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    .sparta-theme .room-meta {
+      color: #A88F60;
+      font-size: 13px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .sparta-theme .cap-bar {
+      background: rgba(197, 160, 89, 0.2);
+    }
+
+    /* Blood Red Progress Bar with Gold Edge */
+    .sparta-theme .cap-fill {
+      background: #8B0000 !important;
+      border-right: 2px solid #C5A059;
+    }
+
+    .sparta-theme .person-chip,
+    .sparta-theme .slot-row {
+      border-bottom: 1px solid rgba(197, 160, 89, 0.2);
+    }
+
+    .sparta-theme .name-tag {
+      font-weight: 600;
+      color: #E2C792;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .sparta-theme .slot-text {
+      color: #8A724A;
+    }
+
+    .sparta-theme .avatar-empty {
+      border: 1.5px dashed #C5A059;
+      opacity: 0.4;
+    }
+
+    .badge-b {
+      background: #4A0202;
+      color: #C5A059;
+      border: 1px solid #C5A059;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+
+    /* General Shared Styles */
+    .cap-bar {
+      height: 6px;
+      border-radius: 3px;
       margin-bottom: 16px;
       overflow: hidden;
     }
 
     .cap-fill {
       height: 100%;
-      border-radius: 2px;
-      transition: width 0.6s ease;
+      border-radius: 3px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .person-chip {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 6px 0;
-      border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+      padding: 8px 0;
       transition: opacity 0.35s ease;
     }
 
@@ -141,41 +262,26 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
-      font-weight: 500;
+      font-size: 13px;
+      font-weight: 700;
       flex-shrink: 0;
-    }
-
-    .name-tag {
-      font-size: 15px;
-      font-weight: 500;
-      color: #1a1a1a;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .badge {
       font-size: 11px;
-      padding: 2px 8px;
+      padding: 3px 8px;
       border-radius: 8px;
       margin-left: auto;
-    }
-
-    .badge-a {
-      background: #FAEEDA;
-      color: #633806;
-    }
-
-    .badge-b {
-      background: #EAF3DE;
-      color: #27500A;
+      font-family: system-ui, sans-serif;
     }
 
     .slot-row {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 6px 0;
-      border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
-      opacity: 0.35;
+      padding: 8px 0;
+      opacity: 0.5;
     }
 
     .slot-row:last-child {
@@ -186,35 +292,35 @@
       width: 38px;
       height: 38px;
       border-radius: 50%;
-      border: 1.5px dashed rgba(0, 0, 0, 0.25);
       flex-shrink: 0;
     }
 
     .slot-text {
       font-size: 14px;
-      color: #aaa;
     }
 
     .draw-btn {
       width: 100%;
-      padding: 10px;
-      font-size: 15px;
-      font-weight: 500;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
       border-radius: 8px;
-      border: 0.5px solid rgba(0, 0, 0, 0.2);
-      background: #fff;
-      color: #1a1a1a;
-      margin-top: 0.5rem;
-      transition: background 0.15s;
+      border: none;
+      background: #C5A059;
+      color: #170404;
+      margin-top: 1rem;
+      transition: background 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
     .draw-btn:hover {
-      background: #f0f0ee;
+      background: #E2C792;
     }
 
     .draw-btn:disabled {
-      opacity: 0.4;
+      opacity: 0.5;
       cursor: not-allowed;
     }
 
@@ -225,20 +331,23 @@
       cursor: pointer;
       border: none;
       background: transparent;
-      color: #888;
-      margin-top: 6px;
+      color: #aaa;
+      margin-top: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .reset-btn:hover {
-      color: #1a1a1a;
+      color: #fff;
     }
 
     .result-msg {
       text-align: center;
-      font-size: 14px;
-      color: #3B6D11;
-      margin-top: 10px;
+      font-size: 15px;
+      color: #C5A059;
+      margin-top: 12px;
       min-height: 20px;
+      font-family: 'Cinzel', serif;
     }
   </style>
 </head>
@@ -246,33 +355,35 @@
 <body>
 
   <div class="container">
-    <h1>Room Allocation Draw</h1>
+    <h1>DESTINY DRAW</h1>
 
-    <p class="pool-label">Drawing pool — all 6 people</p>
+    <p class="pool-label">THE FATES DECIDE FOR ALL 6</p>
     <div class="pool-chips" id="pool-chips"></div>
 
     <div class="rooms-grid">
-      <div class="room-card">
-        <p class="room-title">Room A</p>
-        <p class="room-meta">2 persons</p>
+      <div class="room-card lgbt-theme">
+        <p class="room-title">Pride Suite</p>
+        <p class="room-meta">2 Persons max</p>
         <div class="cap-bar">
-          <div class="cap-fill" id="barA" style="width:0%; background:#EF9F27;"></div>
+          <div class="cap-fill" id="barA" style="width:0%;"></div>
         </div>
         <div id="roomA-list">
           <div class="slot-row">
-            <div class="avatar-empty"></div><span class="slot-text">slot 1</span>
+            <div class="avatar-empty" style="border: 1.5px dashed rgba(0,0,0,0.25)"></div><span class="slot-text">slot
+              1</span>
           </div>
           <div class="slot-row">
-            <div class="avatar-empty"></div><span class="slot-text">slot 2</span>
+            <div class="avatar-empty" style="border: 1.5px dashed rgba(0,0,0,0.25)"></div><span class="slot-text">slot
+              2</span>
           </div>
         </div>
       </div>
 
-      <div class="room-card">
-        <p class="room-title">Room B</p>
-        <p class="room-meta">4 persons</p>
+      <div class="room-card sparta-theme">
+        <p class="room-title">Spartan Barracks</p>
+        <p class="room-meta">4 Warriors max</p>
         <div class="cap-bar">
-          <div class="cap-fill" id="barB" style="width:0%; background:#1D9E75;"></div>
+          <div class="cap-fill" id="barB" style="width:0%;"></div>
         </div>
         <div id="roomB-list">
           <div class="slot-row">
@@ -292,9 +403,9 @@
     </div>
 
     <button class="draw-btn" id="drawBtn" onclick="doDraw()">
-      <i class="ti ti-arrows-shuffle"></i> &nbsp;Draw rooms
+      <i class="ti ti-swords"></i> Let the Draw Begin
     </button>
-    <button class="reset-btn" id="resetBtn" onclick="doReset()" style="display:none;">↺ Reset &amp; draw again</button>
+    <button class="reset-btn" id="resetBtn" onclick="doReset()" style="display:none;">↺ Reset the timeline</button>
     <p class="result-msg" id="resultMsg"></p>
   </div>
 
@@ -346,8 +457,8 @@
 
     function resetLists() {
       document.getElementById("roomA-list").innerHTML = `
-      <div class="slot-row"><div class="avatar-empty"></div><span class="slot-text">slot 1</span></div>
-      <div class="slot-row"><div class="avatar-empty"></div><span class="slot-text">slot 2</span></div>`;
+      <div class="slot-row"><div class="avatar-empty" style="border: 1.5px dashed rgba(0,0,0,0.25)"></div><span class="slot-text">slot 1</span></div>
+      <div class="slot-row"><div class="avatar-empty" style="border: 1.5px dashed rgba(0,0,0,0.25)"></div><span class="slot-text">slot 2</span></div>`;
       document.getElementById("roomB-list").innerHTML = `
       <div class="slot-row"><div class="avatar-empty"></div><span class="slot-text">slot 1</span></div>
       <div class="slot-row"><div class="avatar-empty"></div><span class="slot-text">slot 2</span></div>
@@ -358,8 +469,7 @@
     async function doDraw() {
       document.getElementById("drawBtn").disabled = true;
 
-      // 1. The Stealth Rigging: We know where they are going, 
-      // but we shuffle the visual drawing order of all 6 people.
+      // Secret rigging, randomized visual order
       const visualDrawOrder = shuffle([...everyone]);
 
       resetLists();
@@ -369,13 +479,11 @@
       for (let i = 0; i < visualDrawOrder.length; i++) {
         const targetPerson = visualDrawOrder[i];
 
-        // Delay for suspenseful animation
         await new Promise(r => setTimeout(r, 600));
 
         const chip = document.getElementById("chip-" + targetPerson.name);
         if (chip) chip.classList.add("leaving");
 
-        // Check where this person is secretly assigned to go
         const inA = ROOM_A_REQUIRED.includes(targetPerson.name);
 
         if (inA) {
@@ -386,7 +494,7 @@
 
         const listId = inA ? "roomA-list" : "roomB-list";
         const badgeClass = inA ? "badge-a" : "badge-b";
-        const badgeText = inA ? "room A" : "room B";
+        const badgeText = inA ? "Pride" : "Sparta";
         const list = document.getElementById(listId);
 
         const slotIdx = inA ? aCurrent.length - 1 : bCurrent.length - 1;
@@ -400,12 +508,11 @@
           requestAnimationFrame(() => requestAnimationFrame(() => { newRow.style.opacity = "1"; }));
         }
 
-        // Fill progress bars smoothly based on the random visual order
         document.getElementById("barA").style.width = Math.round((aCurrent.length / 2) * 100) + "%";
         document.getElementById("barB").style.width = Math.round((bCurrent.length / 4) * 100) + "%";
       }
 
-      document.getElementById("resultMsg").textContent = "All done! Rooms are set.";
+      document.getElementById("resultMsg").textContent = "The fates have decided!";
       document.getElementById("resetBtn").style.display = "block";
     }
 
