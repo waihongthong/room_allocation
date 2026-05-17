@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Room Allocation Draw</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f5f5f3;
+      color: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 640px;
+    }
+
+    h1 {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+    }
+
+    .pool-label {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 10px;
+    }
+
+    .pool-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 44px;
+      margin-bottom: 1.5rem;
+    }
+
+    .pool-chip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 12px 5px 6px;
+      border: 0.5px solid rgba(0,0,0,0.15);
+      border-radius: 99px;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1a1a1a;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .pool-chip .mini-av {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .pool-chip.leaving {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
+    .rooms-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 1rem;
+    }
+
+    .room-card {
+      background: #fff;
+      border: 0.5px solid rgba(0,0,0,0.15);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+
+    .room-title {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .room-meta {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 14px;
+    }
+
+    .cap-bar {
+      height: 4px;
+      background: rgba(0,0,0,0.1);
+      border-radius: 2px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .cap-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.6s ease;
+    }
+
+    .person-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      border-bottom: 0.5px solid rgba(0,0,0,0.1);
+      transition: opacity 0.35s ease;
+    }
+
+    .person-chip:last-child { border-bottom: none; }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .name-tag {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 8px;
+      margin-left: auto;
+    }
+
+    .badge-a { background: #FAEEDA; color: #633806; }
+    .badge-b { background: #EAF3DE; color: #27500A; }
+
+    .slot-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      border-bottom: 0.5px solid rgba(0,0,0,0.1);
+      opacity: 0.35;
+    }
+
+    .slot-row:last-child { border-bottom: none; }
+
+    .avatar-empty {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1.5px dashed rgba(0,0,0,0.25);
+      flex-shrink: 0;
+    }
+
+    .slot-text {
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    .draw-btn {
+      width: 100%;
+      padding: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 8px;
+      border: 0.5px solid rgba(0,0,0,0.2);
+      background: #fff;
+      color: #1a1a1a;
+      margin-top: 0.5rem;
+      transition: background 0.15s;
+    }
+
+    .draw-btn:hover { background: #f0f0ee; }
+    .draw-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .reset-btn {
+      width: 100%;
+      padding: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: #888;
+      margin-top: 6px;
+    }
+
+    .reset-btn:hover { color: #1a1a1a; }
+
+    .result-msg {
+      text-align: center;
+      font-size: 14px;
+      color: #3B6D11;
+      margin-top: 10px;
+      min-height: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Room Allocation Draw</h1>
+
+  <p class="pool-label">Drawing pool — all 6 people</p>
+  <div class="pool-chips" id="pool-chips"></div>
+
+  <div class="rooms-grid">
+    <div class="room-card">
+      <p class="room-title">Room A</p>
+      <p class="room-meta">2 persons</p>
+      <div class="cap-bar"><div class="cap-fill" id="barA" style="width:0%; background:#EF9F27;"></div></div>
+      <div id="roomA-list">
+        <div class="slot-row"><div class="avatar-empty"></div><span class="slot-text">slot 1</span></div>
+        <div class="slot-row"><div class="avatar-empty"></div><span class="slot-text">slot 2</span></div>
+      </div>
+    </div>
+
+    <div class="room-card">
+      <p class="room-title">Room B</p>
+      <p class="room-meta">4 persons</p>
+      <div class="cap-bar"><div class="cap-fill" id="barB" style="width:0%; background:#1D9E75;"></div></div>
+      <div id="roomB-list">
+        <div class="slot-row"><div class="avatar-empty"></div><span class="slot-text">slot 1</span></div>
+        <div class="slot-row"><div class="avatar-empty"></div><span class="slot-text">slot 2</span></div>
+        <div class="slot-row"><div class="avatar-empty"></div><span class="slot-text">slot 3</span></div>
+        <div class="slot-row"><div class="avatar-empty"></div><span class="slot-text">slot 4</span></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="draw-btn" id="drawBtn" onclick="doDraw()">
+    <i class="ti ti-arrows-shuffle"></i> &nbsp;Draw rooms
+  </button>
+  <button class="reset-btn" id="resetBtn" onclick="doReset()" style="display:none;">↺ Reset &amp; draw again</button>
+  <p class="result-msg" id="resultMsg"></p>
+</div>
+
+<script>
+  const everyone = [
+    { name: "thong",  init: "TH", bg: "#E6F1FB", fg: "#0C447C" },
+    { name: "jian",   init: "JN", bg: "#EEEDFE", fg: "#3C3489" },
+    { name: "fen",    init: "FN", bg: "#FAEEDA", fg: "#633806" },
+    { name: "chin",   init: "CH", bg: "#E1F5EE", fg: "#085041" },
+    { name: "OC",     init: "OC", bg: "#FAECE7", fg: "#712B13" },
+    { name: "laoban", init: "LB", bg: "#FBEAF0", fg: "#72243E" },
+  ];
+
+  const ROOM_A_REQUIRED = ["fen", "laoban"];
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function personByName(n) {
+    return everyone.find(p => p.name === n);
+  }
+
+  function buildPool() {
+    const container = document.getElementById("pool-chips");
+    container.innerHTML = "";
+    everyone.forEach(p => {
+      const chip = document.createElement("div");
+      chip.className = "pool-chip";
+      chip.id = "chip-" + p.name;
+      chip.innerHTML = `<div class="mini-av" style="background:${p.bg};color:${p.fg};">${p.init}</div>${p.name}`;
+      container.appendChild(chip);
+    });
+  }
+
+  function makePersonRow(p, badgeClass, badgeText) {
+    return `<div class="person-chip" style="opacity:0;transition:opacity 0.35s ease;">
+      <div class="avatar" style="background:${p.bg};color:${p.fg};">${p.init}</div>
+      <span class="name-tag">${p.name}</span>
+      <span class="badge ${badgeClass}">${badgeText}</span>
+    </div>`;
+  }
+
+  function resetLists() {
+    document.getElementById("roomA-list").innerHTML = `
+      <div class="slot-row"><div class="avatar-empty"></div><span class="slot-text">slot 1</span></div>
+      <div class="slot-row"><div class="avatar-empty"></div><span class="slot-text">slot 2</span></div>`;
+    document.getElementById("roomB-list").innerHTML = `
+      <div class="slot-row"><div class="avatar-empty"></div><span class="slot-text">slot 1</span></div>
+      <div class="slot-row"><div class="avatar-empty"></div><span class="slot-text">slot 2</span></div>
+      <div class="slot-row"><div class="avatar-empty"></div><span class="slot-text">slot 3</span></div>
+      <div class="slot-row"><div class="avatar-empty"></div><span class="slot-text">slot 4</span></div>`;
+  }
+
+  async function doDraw() {
+    document.getElementById("drawBtn").disabled = true;
+
+    const roomA = ROOM_A_REQUIRED.map(personByName);
+    const roomB = shuffle(everyone.filter(p => !ROOM_A_REQUIRED.includes(p.name)));
+    const allDrawOrder = shuffle([...roomA, ...roomB]);
+
+    resetLists();
+
+    const aFilled = [], bFilled = [];
+
+    for (let i = 0; i < allDrawOrder.length; i++) {
+      const p = allDrawOrder[i];
+      await new Promise(r => setTimeout(r, 400));
+
+      const chip = document.getElementById("chip-" + p.name);
+      if (chip) chip.classList.add("leaving");
+
+      const inA = ROOM_A_REQUIRED.includes(p.name);
+      if (inA) aFilled.push(p); else bFilled.push(p);
+
+      const listId = inA ? "roomA-list" : "roomB-list";
+      const badgeClass = inA ? "badge-a" : "badge-b";
+      const badgeText = inA ? "room A" : "room B";
+      const list = document.getElementById(listId);
+
+      const slotIdx = inA ? aFilled.length - 1 : bFilled.length - 1;
+      const slots = list.querySelectorAll(".slot-row, .person-chip");
+
+      if (slots[slotIdx]) {
+        const tmp = document.createElement("div");
+        tmp.innerHTML = makePersonRow(p, badgeClass, badgeText);
+        const newRow = tmp.firstElementChild;
+        list.replaceChild(newRow, slots[slotIdx]);
+        requestAnimationFrame(() => requestAnimationFrame(() => { newRow.style.opacity = "1"; }));
+      }
+
+      document.getElementById("barA").style.width = Math.round((aFilled.length / 2) * 100) + "%";
+      document.getElementById("barB").style.width = Math.round((bFilled.length / 4) * 100) + "%";
+    }
+
+    document.getElementById("resultMsg").textContent = "All done! Rooms are set.";
+    document.getElementById("resetBtn").style.display = "block";
+  }
+
+  function doReset() {
+    document.getElementById("resultMsg").textContent = "";
+    document.getElementById("resetBtn").style.display = "none";
+    document.getElementById("barA").style.width = "0%";
+    document.getElementById("barB").style.width = "0%";
+    resetLists();
+    buildPool();
+    document.getElementById("drawBtn").disabled = false;
+  }
+
+  buildPool();
+</script>
+
+</body>
+</html>
