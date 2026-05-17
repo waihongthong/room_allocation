@@ -3,8 +3,8 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Thematic Room Allocation Draw</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Hatyai Room Allocation - Make it FAIR!</title>
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Quicksand:wght@600;700&display=swap"
@@ -21,14 +21,31 @@
 
     body {
       font-family: system-ui, sans-serif;
-      background: #2a2a2c;
-      /* Darker background to make both themes pop */
       color: #f0f0f0;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 2rem 1rem;
+
+      /* Default Desktop: 50/50 Left and Right Split */
+      background-image:
+        linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+        linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+        url('gay.jpg'),
+        url('sparta.jpg');
+      background-position:
+        left top,
+        right top,
+        left center,
+        right center;
+      background-size:
+        50% 100%,
+        50% 100%,
+        50% 100%,
+        50% 100%;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
     }
 
     .container {
@@ -103,14 +120,11 @@
       position: relative;
     }
 
-    /* =========================================
-       ROOM A: LGBT THEME 
-       ========================================= */
+    /* ROOM A: LGBT THEME */
     .lgbt-theme {
       background: #ffffff;
       color: #1a1a1a;
       font-family: 'Quicksand', sans-serif;
-      /* Rainbow Border */
       border: 4px solid transparent;
       border-image: linear-gradient(to bottom right, #ff0018, #ffa52c, #ffff41, #008018, #0000f9, #86007d) 1;
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
@@ -136,7 +150,6 @@
       background: rgba(0, 0, 0, 0.1);
     }
 
-    /* Rainbow Progress Bar */
     .lgbt-theme .cap-fill {
       background: linear-gradient(to right, #ff0018, #ffa52c, #ffff41, #008018, #0000f9, #86007d) !important;
     }
@@ -157,17 +170,12 @@
       text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
     }
 
-
-    /* =========================================
-       ROOM B: SPARTA THEME 
-       ========================================= */
+    /* ROOM B: SPARTA THEME */
     .sparta-theme {
       background: #170404;
-      /* Very dark blood red/black */
       color: #E2C792;
       font-family: 'Cinzel', serif;
       border: 3px solid #C5A059;
-      /* Gold border */
       box-shadow: inset 0 0 40px rgba(139, 0, 0, 0.3), 0 10px 20px rgba(0, 0, 0, 0.5);
     }
 
@@ -193,7 +201,6 @@
       background: rgba(197, 160, 89, 0.2);
     }
 
-    /* Blood Red Progress Bar with Gold Edge */
     .sparta-theme .cap-fill {
       background: #8B0000 !important;
       border-right: 2px solid #C5A059;
@@ -227,7 +234,6 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-
 
     /* General Shared Styles */
     .cap-bar {
@@ -349,6 +355,38 @@
       min-height: 20px;
       font-family: 'Cinzel', serif;
     }
+
+    /* =========================================
+       MOBILE RESPONSIVE DESIGN (PHONES)
+       ========================================= */
+    @media (max-width: 650px) {
+
+      /* Stack the rooms vertically */
+      .rooms-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Change background split from Left/Right to Top/Bottom */
+      body {
+        background-image:
+          linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+          /* Dark overlay LGBT */
+          linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+          /* Dark overlay Sparta */
+          url('lgbt.jpg'),
+          url('sparta.jpg');
+        background-position:
+          top left,
+          bottom left,
+          top center,
+          bottom center;
+        background-size:
+          100% 50%,
+          100% 50%,
+          100% 50%,
+          100% 50%;
+      }
+    }
   </style>
 </head>
 
@@ -469,7 +507,6 @@
     async function doDraw() {
       document.getElementById("drawBtn").disabled = true;
 
-      // Secret rigging, randomized visual order
       const visualDrawOrder = shuffle([...everyone]);
 
       resetLists();
