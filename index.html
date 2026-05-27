@@ -587,8 +587,8 @@
       { name: "laoban", init: "LB", bg: "#FBEAF0", fg: "#72243E" },
     ];
 
-    // The secret constraint
-    const ROOM_A_REQUIRED = ["OC", "laoban"];
+    // Tracker for the draw counts
+    let drawCount = 0;
 
     function shuffle(arr) {
       const a = [...arr];
@@ -637,8 +637,27 @@
     async function doDraw() {
       document.getElementById("drawBtn").disabled = true;
 
-      const visualDrawOrder = shuffle([...everyone]);
+      // Increment the draw counter every time they draw
+      drawCount++;
+      let ROOM_A_REQUIRED = [];
 
+      // Determine the RIGGED outcomes based on the draw count
+      if (drawCount === 1) {
+        // 1st Draw: oc and laoban
+        ROOM_A_REQUIRED = ["OC", "laoban"];
+      } else if (drawCount === 2) {
+        // 2nd Draw: laoban + a random person (not laoban)
+        const others = everyone.filter(p => p.name !== "laoban").map(p => p.name);
+        const randomOther = others[Math.floor(Math.random() * others.length)];
+        ROOM_A_REQUIRED = ["laoban", randomOther];
+      } else if (drawCount === 3) {
+        // 3rd Draw: oc and laoban again
+        ROOM_A_REQUIRED = ["OC", "laoban"];
+        // Reset the prank loop so it repeats if they keep complaining and resetting
+        drawCount = 0;
+      }
+
+      const visualDrawOrder = shuffle([...everyone]);
       resetLists();
 
       const aCurrent = [], bCurrent = [];
@@ -691,6 +710,7 @@
       resetLists();
       buildPool();
       document.getElementById("drawBtn").disabled = false;
+      // Note: we purposefully do NOT reset drawCount here so the sequence continues!
     }
 
     buildPool();
